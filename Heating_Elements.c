@@ -1,6 +1,10 @@
 #include <xc.h>
 #include "Heating_Elements.h"
 
+#define HEATER_ON 0
+#define COOLER_ON 1
+#define HEATER_COOLER_OFF 2
+
 //----------Private Variables ---------------
 
 static tByte Sec_blink_counter = 0;
@@ -17,6 +21,7 @@ void adjust_Heater(tByte , tByte);
 void Turn_On_Heater();
 void Turn_On_Cooler();
 void Turn_off_Heater_Cooler();
+tByte Heater_Cooler_state();
 // Heater LED
 void Turn_On_Heating_LED();
 void Blink_Heating_LED();
@@ -72,19 +77,24 @@ tByte read_Temp(){
    between average temperature and user set temp
 ---------------------------------------------------------*/
 void adjust_Heater(tByte avg , tByte set){
-      if (avg - set >= 5 ){            // Turn on Cooler
+      if (avg - set > 5 ){            // Turn on Cooler
           Turn_On_Cooler();
           Sec_blink_counter = 0 ;
-          Turn_On_Heating_LED();
      }
-     else if (set - avg >= 5 ){       // Turn on Heater
+     else if (set - avg > 5 ){       // Turn on Heater
           Turn_On_Heater();
-          Blink_Heating_LED();
-     }else {                           // Stop heating/Cooling
-           Turn_off_Heater_Cooler();
-           Sec_blink_counter = 0;
-           Turn_Off_Heating_LED();
      }
+      
+      tByte state = Heater_Cooler_state(); 
+      
+      if (state == HEATER_COOLER_OFF){
+          Turn_Off_Heating_LED();
+      }else if (state == HEATER_ON){
+          Blink_Heating_LED();
+      }else if (state == COOLER_ON){
+           Turn_On_Heating_LED();
+      } 
+      
 }
 //-------------Heater/Cooler Section ------------------------
 
@@ -99,6 +109,18 @@ void Turn_On_Cooler(){
 void Turn_off_Heater_Cooler(){
     GPIO_SetPortPinState(PORT_C , COOLER_PIN , 0);
     GPIO_SetPortPinState(PORT_C , HEATER_PIN , 0);
+}
+
+tByte Heater_Cooler_state () {
+    tByte cooler_state = GPIO_GetPortPinState (PORT_C , COOLER_PIN);
+    tByte heater_state = GPIO_GetPortPinState (PORT_C , HEATER_PIN);
+    if ( cooler_state == 1){
+        return COOLER_ON;
+    }
+    if (heater_state == 1){
+        return HEATER_ON;
+    }
+    return HEATER_COOLER_OFF;
 }
 
 // ---------------- HEATING LED Section ---------------
