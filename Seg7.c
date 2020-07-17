@@ -1,12 +1,11 @@
 #include "Seg7.h"
 
-
 //-----------Private Variables------------
 static tByte flag = 0;
 static tWord tick_counter = 0;
 static tByte n1 , n2;
 static const tByte table[16]={0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F,0x77,0x7C,0x58,0x5E,0x79,0x71};
-
+static tByte Seg_mode = OFF_MODE;
 // ------------Functions------------------
 
 /*
@@ -18,6 +17,10 @@ void Seg7_Init(){
      GPIO_InitPortPin(PORT_A, Dis_1_pin, GPIO_OUT);
      GPIO_InitPortPin(PORT_A, Dis_2_pin, GPIO_OUT);
      GPIO_SetPortState(PORT_A , 0);
+}
+
+void set_Seg_mode (tByte mode){
+    Seg_mode = mode;
 }
 
 /*

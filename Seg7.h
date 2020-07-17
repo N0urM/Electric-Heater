@@ -14,13 +14,12 @@
 #define BLINK_PERIOD       50
 #define Dis_1_pin          4
 #define Dis_2_pin          5
-// ------ Extern Variables -----------------------------------------
-extern tByte Seg_mode;
-
+       
 // ------ Public function prototypes -------------------------------
 void Seg7_Init();
 void Seg7_Update(void);
 void Set_Seg7(tByte  , tByte );
 tByte Get_Seg7();
+void set_Seg_mode(tByte);
 
 #endif

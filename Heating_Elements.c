@@ -12,7 +12,7 @@ static tByte index = 0;
 static tByte temp_readings[10] = {0};
 static tByte avg_temp;
 static tByte setting_temp;
-
+static tByte heating_mode = NO_HEATING_MODE;
 // ------ Private functions prototypes ------------------------------
 //Sensor reading
 tByte read_Temp();              
@@ -40,10 +40,21 @@ void Heating_Elements_init(){
 
 //----------Main Task ---------------
 void Heating_Elements_Update(void){
-    
-    avg_temp = read_Temp();
-    setting_temp = Get_Setting_Temp();
-    adjust_Heater(avg_temp , setting_temp); 
+    switch (heating_mode){
+        case HEATING_MODE:
+            avg_temp = read_Temp();
+            setting_temp = Get_Setting_Temp();
+            adjust_Heater(avg_temp , setting_temp); 
+            break;
+        case NO_HEATING_MODE:
+            Turn_off_Heater_Cooler();
+            Turn_Off_Heating_LED();
+            break;
+    }
+}
+
+void set_heating_mode (tByte mode){
+    heating_mode = mode;
 }
 
 tByte get_Avg_Temp (){

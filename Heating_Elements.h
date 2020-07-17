@@ -1,6 +1,8 @@
 #ifndef HEATING_ELEMENTS_H
 #define	HEATING_ELEMENTS_H
 
+#define HEATING_MODE    1
+#define NO_HEATING_MODE 2
 #include <xc.h> // include processor files - each processor file is guarded.  
 #include "main.h"
 #include "gpio.h"
@@ -20,6 +22,7 @@
 // ------ Public function prototypes -------------------------------
 void Heating_Elements_init();   //initialize module
 void Heating_Elements_Update(void);
+void set_heating_mode(tByte);
 tByte get_Avg_Temp ();
 
 #endif	

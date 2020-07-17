@@ -1,7 +1,5 @@
 #include "Electrical_Heater.h"
 
-//--------------------Extern Variables-------------------------------
-tByte Seg_mode = OFF_MODE;
 //--------------------Private Variables------------------------------
 static tByte MODE_SETTING = OFF_STATE;
 static tByte set_Temp;
@@ -103,7 +101,7 @@ void EH_Update (void){
             case ON_SETTING_STATE:
             {
                if (++blink_sec_counter >= ONE_SEC){
-                 Seg_mode =  BLINK_MODE;
+                 set_Seg_mode(BLINK_MODE);
                  blink_sec_counter = 0;
                }
                if (PB_GetState(PB_PLUS) == PB_PRE_RELEASED )//UP BTN Pressed
@@ -143,8 +141,9 @@ void EH_Update (void){
        - Update Heating Elements state 
 ---------------------------------------------------------*/
 void On_Display(){
+     set_heating_mode(HEATING_MODE);
      avg_temp = get_Avg_Temp();
-     Seg_mode = UPDATE_MODE;
+     set_Seg_mode(UPDATE_MODE);
      if(++dis_sec_counter >= ONE_SEC)
      {
        Set_Seg7(avg_temp/10 , avg_temp%10);
@@ -158,6 +157,7 @@ void On_Display(){
        - Update the Set Temp variable
 ---------------------------------------------------------*/
 void On_Setting(tByte set){
+    set_heating_mode(NO_HEATING_MODE);
      if (set == SETTINGP){
          set_Temp+=5 ;
          if(set_Temp > 75)
@@ -177,7 +177,8 @@ void On_Setting(tByte set){
          while maintaining user settings
 ---------------------------------------------------------*/
 void Off_Display(){
-     Seg_mode = OFF_MODE;
+     set_Seg_mode(OFF_MODE);
+     set_heating_mode(NO_HEATING_MODE);
 }
 
 /*--------Getter for user setting-----------------------*/
